@@ -4,18 +4,29 @@ import shutil
 import json
 import urllib.request
 import re
+import platform
+import stat
 from datetime import datetime
 
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
-# Root folder for the upstream build
-WORK_DIR = r"H:\Automation_Empire\Upstream_RuneLite"
+# Detect OS and set paths dynamically
+IS_WINDOWS = os.name == 'nt'
+USER_HOME = os.path.expanduser("~")
 
-# Where to save the version number for the second script to find
-# We save this in the root Automation_Empire folder so both scripts can access it easily
-VERSION_FILE_PATH = r"H:\Automation_Empire\target_version.txt"
+# Set Base Directory
+# If on Windows and H: drive exists, use it (preserving your old workflow)
+# Otherwise, default to the user's home folder (Works on Ubuntu & Windows C drive)
+if IS_WINDOWS and os.path.exists(r"H:\\"):
+    BASE_DIR = r"H:\Automation_Empire"
+else:
+    BASE_DIR = os.path.join(USER_HOME, "Automation_Empire")
+
+# Define operational paths using os.path.join for cross-platform compatibility
+WORK_DIR = os.path.join(BASE_DIR, "Upstream_RuneLite")
+VERSION_FILE_PATH = os.path.join(BASE_DIR, "target_version.txt")
 
 MAVEN_GROUP_ID = "net.runelite"
 MAVEN_VERSION = "LOCAL-GRADLE"
@@ -40,9 +51,12 @@ KEEP_PLUGINS = {
 class RuneLiteBootstrapper:
     def __init__(self):
         self.repo_url = "https://github.com/runelite/runelite.git"
-        self.mvn_cmd = "mvn.cmd" if os.name == 'nt' else "mvn"
-        gradle_script = "gradlew.bat" if os.name == 'nt' else "gradlew"
+        self.mvn_cmd = "mvn.cmd" if IS_WINDOWS else "mvn"
+        
+        # Determine Gradle command path
+        gradle_script = "gradlew.bat" if IS_WINDOWS else "gradlew"
         self.gradle_cmd = os.path.join(WORK_DIR, gradle_script)
+        
         self.latest_tag = ""
         self.latest_version = ""
 
@@ -55,7 +69,8 @@ class RuneLiteBootstrapper:
             # We use /tags because /releases/latest often returns 404 for this repo
             url = "https://api.github.com/repos/runelite/runelite/tags"
             
-            with urllib.request.urlopen(url) as response:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req) as response:
                 data = json.loads(response.read().decode())
                 
                 found_tag = None
@@ -86,7 +101,11 @@ class RuneLiteBootstrapper:
                 self.log(f"Detected Stable Version: {self.latest_version} (Tag: {self.latest_tag})")
                 
                 # === SAVE THE VERSION ARTIFACT ===
-                os.makedirs(os.path.dirname(VERSION_FILE_PATH), exist_ok=True)
+                # Ensure directory exists before writing
+                target_dir = os.path.dirname(VERSION_FILE_PATH)
+                if target_dir: # Only make dirs if path is not empty
+                    os.makedirs(target_dir, exist_ok=True)
+                    
                 with open(VERSION_FILE_PATH, "w") as f:
                     f.write(self.latest_version)
                 self.log(f"Saved version target to: {VERSION_FILE_PATH}")
@@ -97,14 +116,23 @@ class RuneLiteBootstrapper:
 
     def setup_env(self):
         env = os.environ.copy()
+        # Set JAVA_HOME if needed here, or rely on system path
         return env
 
     def run(self, cmd, cwd, env):
         self.log(f"EXEC: {cmd}")
         subprocess.check_call(cmd, cwd=cwd, env=env, shell=True)
 
+    def make_gradle_executable(self):
+        """Ensures gradlew has execution permissions on Linux/Mac"""
+        if not IS_WINDOWS and os.path.exists(self.gradle_cmd):
+            st = os.stat(self.gradle_cmd)
+            os.chmod(self.gradle_cmd, st.st_mode | stat.S_IEXEC)
+            self.log("Made gradlew executable.")
+
     def install_jar(self, file_path, artifact_id, env):
         self.log(f"Installing {os.path.basename(file_path)}...")
+        # Quote file path to handle spaces in Linux or Windows paths
         cmd = (
             f'{self.mvn_cmd} install:install-file '
             f'-Dfile="{file_path}" '
@@ -130,6 +158,7 @@ class RuneLiteBootstrapper:
     def prune_plugins(self):
         self.log("--- PRUNING PLUGINS ---")
         base_path = os.path.join(WORK_DIR, "runelite-client")
+        # Use os.path.join to handle slashes correctly
         main_plugins = os.path.join(base_path, "src", "main", "java", "net", "runelite", "client", "plugins")
         test_plugins = os.path.join(base_path, "src", "test", "java", "net", "runelite", "client", "plugins")
         module_file = os.path.join(base_path, "src", "main", "java", "net", "runelite", "client", "RuneLiteModule.java")
@@ -163,9 +192,12 @@ class RuneLiteBootstrapper:
             for line in lines:
                 should_delete = False
                 for p in KEEP_PLUGINS:
+                    # Logic: if line matches a kept plugin, break (keep it)
                     if f"plugins.{p}" in line or f"{p.capitalize()}Plugin.class" in line or f"{p.upper()}" in line:
                         break 
                 else:
+                    # Logic: if loop finished without breaking, it's not a kept plugin.
+                    # check if it is a plugin definition line
                     if "net.runelite.client.plugins." in line or "Plugin.class" in line:
                          if "PluginManager" not in line and "ExternalPluginManager" not in line:
                              should_delete = True
@@ -186,6 +218,7 @@ class RuneLiteBootstrapper:
             self.run(f"{self.mvn_cmd} clean install -DskipTests -Dmaven.test.skip=true -Dmaven.javadoc.skip=true", WORK_DIR, env)
         else:
             self.log("Detected GRADLE build system")
+            self.make_gradle_executable() # FIX: Ensure gradlew is +x on Linux
             self.run(f'"{self.gradle_cmd}" :runelite-api:assemble', WORK_DIR, env)
             self.run(f'"{self.gradle_cmd}" :client:assemble -x javadoc', WORK_DIR, env)
 
@@ -233,7 +266,12 @@ class RuneLiteBootstrapper:
 if __name__ == "__main__":
     try:
         RuneLiteBootstrapper().execute()
-        input("Bootstrap Complete. Press Enter to exit...")
+        # On Linux servers, input() hangs automation. Only pause if interactive.
+        if sys.stdin.isatty():
+            input("Bootstrap Complete. Press Enter to exit...")
     except Exception as e:
         print(f"CRITICAL FAILURE: {e}")
-        input("Error occurred. Press Enter to exit...")
+        # Only pause on error if interactive
+        import sys
+        if sys.stdin.isatty():
+             input("Error occurred. Press Enter to exit...")
