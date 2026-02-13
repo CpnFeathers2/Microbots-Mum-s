@@ -1,17 +1,18 @@
-Follow the youtube video on how to setup your runelite maven project (similar as before just uses Microbot's mum and not Microbot).
+Follow the youtube video on my channel on how to setup your runelite maven project (similar as before just uses Microbot's mum and not Microbot).
 
-This project comes with only 2 plugins:
+This project comes with some plugins:
 1. An autolooter
 2. Screenshot programme (takes 1 screenshot per second (this is video recording of your bot))
 3. BoL (Highly restricted QoL)
 4. Breakhandler before it got corrupted
 5. Discord (I just leave this in out of fear my integrated webhooks wont trigger)
-6. Highly educative ExampleScript and ExamplePlugin - if you need the "basic" one just get it from Microbot's repo. 
-7. 
+6. Highly educative ExampleScript and ExamplePlugin - if you need the "basic" one just get it from another repository on my profile I made for it.
+7. Player Monitor (with LiteMode)
+8. Rs2walker (ShortestPath) - #tip ShortestPathPlugin.walkViaPanel() is a great method if you ever get stuck or script walkTo commands don't operate reliably. 
 
-Please PR to improve both these plugins for developer role. Discord link available on youtube channel: https://www.youtube.com/@davidgatward4395
+Please PR to improve and add plugins for developer role. Discord link available on youtube channel.
 
-Otherwise for my scripters here's the full breakdown: 
+This is the full setup (will go through it on YouTube video for beginners):
 ## 🛠️ Quick Setup
 1. **Clone the repo.**
 2. **Create a `config.json`** in the root directory (refer to `config.example.json`).
@@ -36,3 +37,6 @@ Before running the client for the first time, you **must** update the following 
 3. Run the script:
    ```powershell
    python bootstrap_runelite.py
+
+MY YOUTUBE CHANNEL:  
+https://www.youtube.com/@davidgatward4395
