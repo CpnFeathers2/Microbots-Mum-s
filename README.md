@@ -53,6 +53,8 @@ https://github.com/FireStarter-Instigator/example-and-vanilla-plugins
 THE OFFICIAL GITHUB LINK TO THE REPO (Just like Microbot's or Runelite's)
 https://github.com/FireStarter-Instigator/Microbots-Mum
 
-THIS WAS CREATING A HALLUCINATION OF THE AI BUT IT DEMONSTRATES THAT apache-maven-3.9.11 (maven 3.9.11 link to download https://maven.apache.org/docs/history.html) 
+THIS WAS A HALLUCINATION OF THE AI SO I MADE IT:
 https://github.com/FireStarter-Instigator/Microbots-Mum/commit/d96eff5b4f4eed96b2d30f8b4716fc3985789c37
+IT DEMONSTRATES THAT apache-maven-3.9.11 (link to download https://maven.apache.org/docs/history.html) IS A COMPATIBLE MAVEN VERSION FOR THE BUILD AND FEATURES. 
+
 
