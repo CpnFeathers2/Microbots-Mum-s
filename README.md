@@ -5,12 +5,13 @@ TO USE THIS PROJECT:
 PLEASE USE apache-maven-3.9.11 (system-wide - refer to links at bottom of README-md)
 
 This project comes with some plugins:
+1. Redacted from Microbot Project Moss Killer plugin. 
 1. An autolooter
-2. Screenshot programme (takes 1 screenshot per second (this is video recording of your bot))
+2. Screenshot programme (takes 1 screenshot per second of game window only (this is video recording of your bot))
 3. BoL (Highly restricted QoL)
-4. Breakhandler before it got corrupted
+4. Breakhandler before it got corrupted with pauseallscripts changes
 5. Discord (I just leave this in out of fear my integrated webhooks wont trigger)
-6. Highly educative ExampleScript and ExamplePlugin - if you need the "basic" one just get it from another repository link from my prfile at the bottom of the README.md
+6. Highly educative ExampleScript and ExamplePlugin - if you need the "basic" one as a beginner coder just get it from another repository link from my profile at the bottom of the README.md
 7. Player Monitor (with LiteMode)
 8. Rs2walker (ShortestPath) - #tip ShortestPathPlugin.walkViaPanel() is a great method if you ever get stuck or script walkTo commands don't operate reliably. 
 
