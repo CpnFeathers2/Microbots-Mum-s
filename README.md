@@ -2,7 +2,7 @@ TO USE THIS PROJECT:
 1. GO HERE: https://download-directory.github.io/
 2. Then paste in the official full directory URL (bottom of the README.md) and what this does is the same as doing git clone. So then you just click open project instead of clone repository.
 
-PLEASE USE apache-maven-3.9.11 (system-wide - refer to links at bottom of README-md)
+PLEASE USE apache-maven-3.9.11 (system-wide, and when building make sure you make it 4gb capacity MAVEN_OPTS="-Xmx4g" - refer to links at bottom of README-md)
 
 This project comes with some plugins:
 1. Redacted from Microbot Project Moss Killer plugin. 
