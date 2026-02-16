@@ -16,7 +16,7 @@ import java.awt.*;
         name = PluginDescriptor.Bee + "Screenshot",
         description = "Takes a screenshot every second",
         tags = {"screenshot", "bee"},
-        enabledByDefault = false
+        enabledByDefault = true
 )
 @Slf4j
 public class ScreenShotPlugin extends Plugin {
