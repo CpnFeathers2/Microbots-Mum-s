@@ -116,7 +116,6 @@ public class Microbot {
     public static int runEnergyThreshold = 1000;
     public static boolean superJammed = false;
     public static boolean walkJammed = false;
-    public static boolean restartedMissionControl = false;
     @Getter
     @Setter
     @Inject
