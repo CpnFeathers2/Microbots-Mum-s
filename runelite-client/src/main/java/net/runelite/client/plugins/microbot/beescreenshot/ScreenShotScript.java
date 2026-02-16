@@ -43,7 +43,7 @@ public class ScreenShotScript extends Script {
 
                     String fileName = "shot_" + System.currentTimeMillis() + ".png";
                     File output = new File(System.getProperty("user.home")
-                            + "/.runelite/screenshots/examples/"
+                            + "/microbot-screenshots/"
                             + fileName);
                     output.getParentFile().mkdirs();
 
