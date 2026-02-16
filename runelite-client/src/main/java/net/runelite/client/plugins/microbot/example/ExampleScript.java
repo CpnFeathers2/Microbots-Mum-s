@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ExampleScript extends Script {
 
+    // Just a chill script
     private static final List<String> PHRASES = Arrays.asList(
             "Just walking around, don't mind me!",
             "Anyone else just love the GE vibes?",
