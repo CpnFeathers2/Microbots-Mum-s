@@ -2190,6 +2190,7 @@ public class MossKillerScript extends Script {
                 sleepUntil(() -> Rs2Equipment.isWearing(STAFF_OF_FIRE));
             }
             Rs2Magic.cast(MagicAction.VARROCK_TELEPORT);
+            sleepUntil(() -> Rs2Player.getWorldLocation().getY() < 6000, 10000);
             if (BreakHandlerScript.breakIn <= 30) {
                 sleep(10000,15000);
             }
