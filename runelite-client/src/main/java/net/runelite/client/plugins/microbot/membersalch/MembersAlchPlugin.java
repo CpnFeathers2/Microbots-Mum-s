@@ -15,7 +15,7 @@ import java.awt.*;
 
 @PluginDescriptor(
     name = PluginDescriptor.CpnFeathers + "Members Alcher",
-    description = "Automated members-only alching with 4-hour login cycles",
+    description = "Automated members-only alching with 4-hour login cycles.",
     tags = {"alch", "magic", "members", "automation", "cpnfeathers"},
     enabledByDefault = false
 )
