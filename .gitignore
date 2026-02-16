@@ -16,3 +16,4 @@ config.json
 target_version.txt
 *.pyc
 __pycache__/
+Automation_Empire/

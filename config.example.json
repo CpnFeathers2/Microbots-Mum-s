@@ -1,0 +1,6 @@
+{
+    "nvme_drive_letter": "H",
+    "maven_executable": "",
+    "min_artifact_size_bytes": 57671680,
+    "skip_tests": false
+}
