@@ -24,11 +24,43 @@ public class Login {
     private static final int MAX_PLAYER_COUNT = 1950;
 
     public Login() {
-        this(Microbot.getClient().getWorld() > 300 ? Microbot.getClient().getWorld() : getRandomWorld(activeProfile.isMember()));
+        this(getInitialWorld());
     }
 
     public Login(int world) {
-        this(activeProfile.getName(), activeProfile.getPassword(), world);
+        this(getProfileUsername(), getProfilePassword(), world);
+    }
+
+    private static void ensureActiveProfile() {
+        if (activeProfile == null) {
+            try {
+                activeProfile = Microbot.getConfigManager().getProfile();
+            } catch (Exception e) {
+                Microbot.log("Failed to get active profile: " + e.getMessage());
+            }
+        }
+    }
+
+    private static int getInitialWorld() {
+        ensureActiveProfile();
+        return Microbot.getClient().getWorld() > 300 ? Microbot.getClient().getWorld() : getRandomWorld(activeProfile != null ? activeProfile.isMember() : false);
+    }
+
+    private static String getProfileUsername() {
+        ensureActiveProfile();
+        if (activeProfile == null) {
+            Microbot.log("ERROR: No profile configured for autologin");
+            return "";
+        }
+        return activeProfile.getName();
+    }
+
+    private static String getProfilePassword() {
+        ensureActiveProfile();
+        if (activeProfile == null) {
+             return "";
+        }
+        return activeProfile.getPassword();
     }
 
     public Login(String username, String password) {
@@ -36,6 +68,9 @@ public class Login {
     }
 
     public Login(String username, String password, int world) {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            return;
+        }
         if(Microbot.isLoggedIn())
             return;
         if (Microbot.getClient().getLoginIndex() == 3 || Microbot.getClient().getLoginIndex() == 24) { // you were disconnected from the server.
