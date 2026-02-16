@@ -2,9 +2,9 @@ package net.runelite.client.plugins.microbot.beescreenshot;
 
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.client.callback.ClientThread;
 import net.runelite.client.plugins.microbot.Microbot;
 import net.runelite.client.plugins.microbot.Script;
+import net.runelite.client.plugins.microbot.MossKiller.MossKillerPlugin;
 import net.runelite.client.ui.DrawManager;
 import net.runelite.client.util.ImageUtil;
 
@@ -15,40 +15,38 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 public class ScreenShotScript extends Script {
-    private final Client client = Microbot.getInjector().getInstance(Client.class);
-    private final DrawManager drawManager = Microbot.getInjector().getInstance(DrawManager.class);
-    private final ScheduledExecutorService executor = Microbot.getInjector().getInstance(ScheduledExecutorService.class);
+
+    // 600ms when fighting a target, 5s when idle
+    private static final long INTERVAL_ON_TARGET_MS = 600;
+    private static final long INTERVAL_IDLE_MS       = 5000;
+
+    private final Client client =
+        Microbot.getInjector().getInstance(Client.class);
+    private final DrawManager drawManager =
+        Microbot.getInjector().getInstance(DrawManager.class);
+    private final ScheduledExecutorService executor =
+        Microbot.getInjector().getInstance(ScheduledExecutorService.class);
+
+    private long lastShotTime = 0;
+
+    // ── screenshot save ───────────────────────────────────────────────────────
 
     public void captureNow() {
-        ClientThread clientThread = Microbot.getClientThread();
-
-        if (clientThread == null) {
-            Microbot.log("ClientThread is null!");
-            return;
-        }
-
         if (client == null || client.getGameState() == GameState.LOGIN_SCREEN) {
-            Microbot.log("Client is null or on login screen!");
             return;
         }
-
-        // Use DrawManager to capture the next frame (this captures just the game client)
         drawManager.requestNextFrameListener((img) -> {
-            // This callback is on the game thread, move to executor thread
             executor.submit(() -> {
                 try {
                     BufferedImage screenshot = ImageUtil.bufferedImageFromImage(img);
-
                     String fileName = "shot_" + System.currentTimeMillis() + ".png";
-                    File output = new File(System.getProperty("user.home")
-                            + "/microbot-screenshots/"
-                            + fileName);
+                    // Save to ~/microbot-screenshots/ — watched by oracle_test_runner.py
+                    File output = new File(
+                        System.getProperty("user.home") + "/microbot-screenshots/" + fileName
+                    );
                     output.getParentFile().mkdirs();
-
                     ImageIO.write(screenshot, "png", output);
-                    //Microbot.log("Saved screenshot: " + output.getAbsolutePath());
                 } catch (IOException e) {
                     Microbot.log("Screenshot failed: " + e.getMessage());
                 }
@@ -56,28 +54,49 @@ public class ScreenShotScript extends Script {
         });
     }
 
+    // ── target detection ─────────────────────────────────────────────────────
+
+    private boolean hasActiveTarget() {
+        try {
+            // Check if MossKillerPlugin has a target
+             MossKillerPlugin mossKiller = (MossKillerPlugin) Microbot.getPluginManager().getPlugins().stream()
+                .filter(plugin -> plugin instanceof MossKillerPlugin)
+                .findFirst()
+                .orElse(null);
+
+             if (mossKiller != null) {
+                 return mossKiller.getCurrentTarget() != null;
+             }
+             return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ── main loop ────────────────────────────────────────────────────────────
 
     public boolean run(ScreenShotConfig config) {
         Microbot.enableAutoRunOn = false;
+        // Poll every 100ms so we can react quickly when a target appears
         mainScheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(() -> {
             try {
                 if (!Microbot.isLoggedIn()) return;
                 if (!super.run()) return;
-                long startTime = System.currentTimeMillis();
 
-                captureNow();
+                long now      = System.currentTimeMillis();
+                long interval = hasActiveTarget() ? INTERVAL_ON_TARGET_MS : INTERVAL_IDLE_MS;
 
-                long endTime = System.currentTimeMillis();
-                long totalTime = endTime - startTime;
-                System.out.println("Total time for loop " + totalTime);
-
+                if (now - lastShotTime >= interval) {
+                    lastShotTime = now;
+                    captureNow();
+                }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
-        }, 0, 1000, TimeUnit.MILLISECONDS);
+        }, 0, 100, TimeUnit.MILLISECONDS);
         return true;
     }
-    
+
     @Override
     public void shutdown() {
         super.shutdown();
