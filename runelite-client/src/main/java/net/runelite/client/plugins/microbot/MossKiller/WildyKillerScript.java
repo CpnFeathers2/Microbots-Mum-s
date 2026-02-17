@@ -759,6 +759,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
             isTargetOnSameTile(target);
             Rs2Walker.setTarget(null);
             scheduledFuture.cancel(true);
+            Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                    + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                    + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                    + " | target=" + target.getName()
+                    + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
             if(!Rs2Player.isInteracting()) {attack(target);}
             sleepUntil(() -> hitsplatApplied || MossKillerPlugin.isPlayerSnared() || healthIsLow());
             eatingMethod(target);
@@ -779,6 +784,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                     basicAttackSetup();
                     Rs2Walker.setTarget(null);
                     scheduledFuture.cancel(true);
+                    Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                            + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                            + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                            + " | target=" + target.getName()
+                            + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
                     if(!Rs2Player.isInteracting()) {attack(target);}
                     sleepUntil(() -> hitsplatApplied || MossKillerPlugin.isPlayerSnared() || healthIsLow());
                     eatingMethod(target);
@@ -809,6 +819,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
     Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
 }                    Rs2Walker.setTarget(null);
                     scheduledFuture.cancel(true);
+                    Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                            + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                            + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                            + " | target=" + target.getName()
+                            + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
                     if(!Rs2Player.isInteracting()) {attack(target);}
                     sleepUntil(() -> hitsplatApplied || MossKillerPlugin.isPlayerSnared());
                     eatingMethod(target);
@@ -831,6 +846,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                             }
                             Rs2Walker.setTarget(null);
                             scheduledFuture.cancel(true);
+                            Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                                    + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                                    + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                                    + " | target=" + target.getName()
+                                    + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
                             if(!Rs2Player.isInteracting()) {attack(target);}
                             sleepUntil(() -> hitsplatApplied || MossKillerPlugin.isPlayerSnared() || healthIsLow());
                             eatingMethod(target);
@@ -1135,6 +1155,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                         if (ShortestPathPlugin.getPathfinder() == null && Rs2Player.getInteracting() != target) {
                             Rs2Walker.setTarget(null);
                             scheduledFuture.cancel(true);
+                            Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                                    + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                                    + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                                    + " | target=" + target.getName()
+                                    + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
                             if(!Rs2Player.isInteracting()) {attack(target);}
 
                             // Added lambda safety for the sleep
@@ -1232,6 +1257,11 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                             }
                         Rs2Walker.setTarget(null);
                         scheduledFuture.cancel(true);
+                        Microbot.log("PRE_ATTACK_CHECK | isInteracting=" + Rs2Player.isInteracting()
+                                + " | getInteracting=" + (Rs2Player.getInteracting() != null ? Rs2Player.getInteracting().getName() : "null")
+                                + " | getInteracting==target=" + (Rs2Player.getInteracting() == target)
+                                + " | target=" + target.getName()
+                                + " | dist=" + Rs2Walker.getDistanceBetween(Rs2Player.getWorldLocation(), target.getWorldLocation()));
                         if(!Rs2Player.isInteracting()) {attack(target);}
 
                         // Added lambda safety
