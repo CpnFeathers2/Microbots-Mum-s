@@ -705,7 +705,7 @@ public class WildyKillerScript extends Script {
                     // 1. Ensure we are holding the weapon
                     if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
                         Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-                        sleep(200); // Small sleep to let the game register the switch
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
                     }
 
                     // 2. SEPARATE CHECK: Ensure we are using the right style
@@ -1041,7 +1041,7 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                     // 1. Ensure we are holding the weapon
                     if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
                         Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-                        sleep(200); // Small sleep to let the game register the switch
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
                     }
 
                     // 2. SEPARATE CHECK: Ensure we are using the right style
@@ -1191,7 +1191,7 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                     // 1. Ensure we are holding the weapon
                     if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
                         Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-                        sleep(200);
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
                     }
 
                     // 2. SEPARATE CHECK: Ensure we are using the right style
