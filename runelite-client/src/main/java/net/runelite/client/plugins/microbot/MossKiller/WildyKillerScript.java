@@ -678,18 +678,43 @@ public class WildyKillerScript extends Script {
                 && mossKillerPlugin.getAttackStyle()
                 && target.getCombatLevel() < 88) {
             if (weHaveEnoughEnergyToPersue() && !MossKillerPlugin.isPlayerSnared() || !isTargetPlayerFar(target)) {
-                // 1. Ensure we are holding the weapon
-if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
-    Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-    sleep(200); // Small sleep to let the game register the switch
-}
 
-// 2. SEPARATE CHECK: Ensure we are using the right style
-// We check this every time, regardless of whether we just equipped it or already had it.
-if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
-    Microbot.log("Fixing Combat Style to Strength");
-    Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
-}
+                // CHECK: Should we prioritize range?
+                boolean shouldRange = mossKillerPlugin.shouldPrioritizeRange()
+                        && (Rs2Equipment.isWearing(AMMO) || Rs2Inventory.contains(ADAMANT_ARROW))
+                        && (Rs2Equipment.isWearing(MAPLE_SHORTBOW) || Rs2Inventory.contains(MAPLE_SHORTBOW))
+                        && (target.getOverheadIcon() != HeadIcon.RANGED);
+
+                if (shouldRange) {
+                    // 0. Equip Arrows if needed
+                    if (!Rs2Equipment.isWearing(AMMO) && Rs2Inventory.contains(ADAMANT_ARROW)) {
+                         Rs2Inventory.interact(ADAMANT_ARROW, "Wield");
+                         sleepUntil(() -> Rs2Equipment.isWearing(AMMO), 1200);
+                    }
+                    // 1. Equip the Bow
+                    if (!Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        Rs2Inventory.interact(MAPLE_SHORTBOW, "Wield");
+                        sleepUntil(() -> Rs2Equipment.isWearing(MAPLE_SHORTBOW), 1200);
+                    }
+                    // 2. Set Style
+                    if (Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        setCombatStyle(target);
+                    }
+                } else {
+                    // FALLBACK: Melee Logic
+                    // 1. Ensure we are holding the weapon
+                    if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
+                        Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
+                    }
+
+                    // 2. SEPARATE CHECK: Ensure we are using the right style
+                    // We check this every time, regardless of whether we just equipped it or already had it.
+                    if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
+                        Microbot.log("Fixing Combat Style to Strength");
+                        Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
+                    }
+                }
             } else if (isTargetPlayerFarCasting(target)) {
                 if (!castWindBlast(target)) {
                     if (Rs2Equipment.isWearing(AMMO)
@@ -989,18 +1014,43 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
 
             if (weHaveEnoughEnergyToPersue()
                     || !isTargetPlayerFar(target)) {
-                  // 1. Ensure we are holding the weapon
-if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
-    Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-    sleep(200); // Small sleep to let the game register the switch
-}
 
-// 2. SEPARATE CHECK: Ensure we are using the right style
-// We check this every time, regardless of whether we just equipped it or already had it.
-if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
-    Microbot.log("Fixing Combat Style to Strength");
-    Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
-}
+                // CHECK: Should we prioritize range?
+                boolean shouldRange = mossKillerPlugin.shouldPrioritizeRange()
+                        && (Rs2Equipment.isWearing(AMMO) || Rs2Inventory.contains(ADAMANT_ARROW))
+                        && (Rs2Equipment.isWearing(MAPLE_SHORTBOW) || Rs2Inventory.contains(MAPLE_SHORTBOW))
+                        && (target.getOverheadIcon() != HeadIcon.RANGED);
+
+                if (shouldRange) {
+                    // 0. Equip Arrows if needed
+                    if (!Rs2Equipment.isWearing(AMMO) && Rs2Inventory.contains(ADAMANT_ARROW)) {
+                         Rs2Inventory.interact(ADAMANT_ARROW, "Wield");
+                         sleepUntil(() -> Rs2Equipment.isWearing(AMMO), 1200);
+                    }
+                    // 1. Equip the Bow
+                    if (!Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        Rs2Inventory.interact(MAPLE_SHORTBOW, "Wield");
+                        sleepUntil(() -> Rs2Equipment.isWearing(MAPLE_SHORTBOW), 1200);
+                    }
+                    // 2. Set Style
+                    if (Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        setCombatStyle(target);
+                    }
+                } else {
+                    // FALLBACK: Melee Logic
+                    // 1. Ensure we are holding the weapon
+                    if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
+                        Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
+                    }
+
+                    // 2. SEPARATE CHECK: Ensure we are using the right style
+                    // We check this every time, regardless of whether we just equipped it or already had it.
+                    if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
+                        Microbot.log("Fixing Combat Style to Strength");
+                        Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
+                    }
+                }
                 Rs2Walker.setTarget(null);
             } else if (!castWindBlast(target) && !isTargetPlayerFarCasting(target)) {
                 if (Rs2Equipment.isWearing(AMMO)
@@ -1049,18 +1099,43 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
             Microbot.log("target is not null, less than 88 combat, no overheads and we are snared");
 
             if (!isTargetPlayerFar(target)) {
-                  // 1. Ensure we are holding the weapon
-if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
-    Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-    sleep(200); // Small sleep to let the game register the switch
-}
 
-// 2. SEPARATE CHECK: Ensure we are using the right style
-// We check this every time, regardless of whether we just equipped it or already had it.
-if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
-    Microbot.log("Fixing Combat Style to Strength");
-    Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
-}
+                // CHECK: Should we prioritize range?
+                boolean shouldRange = mossKillerPlugin.shouldPrioritizeRange()
+                        && (Rs2Equipment.isWearing(AMMO) || Rs2Inventory.contains(ADAMANT_ARROW))
+                        && (Rs2Equipment.isWearing(MAPLE_SHORTBOW) || Rs2Inventory.contains(MAPLE_SHORTBOW))
+                        && (target.getOverheadIcon() != HeadIcon.RANGED);
+
+                if (shouldRange) {
+                    // 0. Equip Arrows if needed
+                    if (!Rs2Equipment.isWearing(AMMO) && Rs2Inventory.contains(ADAMANT_ARROW)) {
+                         Rs2Inventory.interact(ADAMANT_ARROW, "Wield");
+                         sleepUntil(() -> Rs2Equipment.isWearing(AMMO), 1200);
+                    }
+                    // 1. Equip the Bow
+                    if (!Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        Rs2Inventory.interact(MAPLE_SHORTBOW, "Wield");
+                        sleepUntil(() -> Rs2Equipment.isWearing(MAPLE_SHORTBOW), 1200);
+                    }
+                    // 2. Set Style
+                    if (Rs2Equipment.isWearing(MAPLE_SHORTBOW)) {
+                        setCombatStyle(target);
+                    }
+                } else {
+                    // FALLBACK: Melee Logic
+                    // 1. Ensure we are holding the weapon
+                    if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
+                        Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
+                        sleep(200); // Small sleep to let the game register the switch
+                    }
+
+                    // 2. SEPARATE CHECK: Ensure we are using the right style
+                    // We check this every time, regardless of whether we just equipped it or already had it.
+                    if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleStrength()) {
+                        Microbot.log("Fixing Combat Style to Strength");
+                        Rs2Combat.setAttackStyle(COMBAT_STYLE_TWO);
+                    }
+                }
                 Rs2Walker.setTarget(null);
             } else if (!castWindBlast(target) && !isTargetPlayerFarCasting(target)) {
                 if (Rs2Equipment.isWearing(AMMO)
@@ -1116,7 +1191,7 @@ if (Rs2Equipment.isWearing(BRYOPHYTAS_STAFF) && !mossKillerPlugin.isAttackStyleS
                     // 1. Ensure we are holding the weapon
                     if (!Rs2Equipment.isWearing(BRYOPHYTAS_STAFF)) {
                         Rs2Inventory.interact(BRYOPHYTAS_STAFF, "Wield");
-                        sleep(200);
+                        sleepUntil(() -> Rs2Equipment.isWearing(BRYOPHYTAS_STAFF), 1200);
                     }
 
                     // 2. SEPARATE CHECK: Ensure we are using the right style

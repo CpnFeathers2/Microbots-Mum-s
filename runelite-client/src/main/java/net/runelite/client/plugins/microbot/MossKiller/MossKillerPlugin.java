@@ -405,9 +405,9 @@ public class MossKillerPlugin extends Plugin {
                 useMelee = false;
 
             } else if (currentTarget.getOverheadIcon() == MAGIC) {
-                if (isSnared) {
-                    useRange = true;  // Use ranged if snared
-                    useMelee = false; // No melee if snared
+                if (isSnared || shouldPrioritizeRange()) {
+                    useRange = true;  // Use ranged if snared or prioritize range
+                    useMelee = false; // No melee if snared or prioritize range
                 } else {
                     useRange = false;
                     useMelee = true; // Use melee if not snared
@@ -415,6 +415,12 @@ public class MossKillerPlugin extends Plugin {
                 useWindBlast = false; // No wind blast in this case
             }
         }
+    }
+
+    public boolean shouldPrioritizeRange() {
+        int strength = Microbot.getClient().getRealSkillLevel(Skill.STRENGTH);
+        int ranged = Microbot.getClient().getRealSkillLevel(Skill.RANGED);
+        return strength <= 65 && ranged >= 55;
     }
 
     @Subscribe
