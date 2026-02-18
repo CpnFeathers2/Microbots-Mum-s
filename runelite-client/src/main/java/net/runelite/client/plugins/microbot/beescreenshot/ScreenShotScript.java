@@ -60,6 +60,8 @@ public class ScreenShotScript extends Script {
     private boolean hasActiveTarget() {
         for (Plugin plugin : Microbot.getPluginManager().getPlugins()) {
             try {
+                // Use reflection to call getCurrentTarget() to avoid hard dependencies
+                // on specific plugins (like MossKillerPlugin) and support future ones.
                 Method method = plugin.getClass().getMethod("getCurrentTarget");
                 Object target = method.invoke(plugin);
                 if (target != null) {
