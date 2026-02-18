@@ -2,9 +2,9 @@ package net.runelite.client.plugins.microbot.beescreenshot;
 
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.microbot.Microbot;
 import net.runelite.client.plugins.microbot.Script;
-import net.runelite.client.plugins.microbot.MossKiller.MossKillerPlugin;
 import net.runelite.client.ui.DrawManager;
 import net.runelite.client.util.ImageUtil;
 
@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -57,20 +58,18 @@ public class ScreenShotScript extends Script {
     // ── target detection ─────────────────────────────────────────────────────
 
     private boolean hasActiveTarget() {
-        try {
-            // Check if MossKillerPlugin has a target
-             MossKillerPlugin mossKiller = (MossKillerPlugin) Microbot.getPluginManager().getPlugins().stream()
-                .filter(plugin -> plugin instanceof MossKillerPlugin)
-                .findFirst()
-                .orElse(null);
-
-             if (mossKiller != null) {
-                 return mossKiller.getCurrentTarget() != null;
-             }
-             return false;
-        } catch (Exception e) {
-            return false;
+        for (Plugin plugin : Microbot.getPluginManager().getPlugins()) {
+            try {
+                Method method = plugin.getClass().getMethod("getCurrentTarget");
+                Object target = method.invoke(plugin);
+                if (target != null) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // Method not found or error invoking, continue to next plugin
+            }
         }
+        return false;
     }
 
     // ── main loop ────────────────────────────────────────────────────────────
