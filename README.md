@@ -38,12 +38,18 @@ Before running the client for the first time, you **must** update the following 
 3. **Source Sanitization**: Rewrites `RuneLiteModule.java` on the fly to prevent compilation errors from deleted plugins.
 4. **Local Artifact Injection**: Builds the project and installs `runelite-api` and `runelite-client` into your local `.m2` repository under the version `LOCAL-GRADLE`.
 
+This then means that the runelite-api and runelite-client is external to your maven build, and is processed through gradle commands. This allows for accurate (and possible) api calls. 
+However, there is an older version of the runelite-api that ships with the build. Simply Legacy api from pre-gradle. Will likely slowly fade from existence but it has cool modules like Cuboid. 
+
 ### 💻 Usage
 1. Open `bootstrap_runelite.py`.
 2. Edit the `WORK_DIR` and `VERSION_FILE_PATH`.
 3. Run the script:
    ```powershell
    python bootstrap_runelite.py
+
+Anyway, once you've set it all up, your m2 got your api, your project is cloned/opened in intelliJ, you can do a normal maven clean install to get your jar, or you can go to your Microbot root project folder and use the python script build_manager. 
+This will allow an automatic, background jar build, showing a gui of which branch you would like to build AND making a clone of your current entire setup. So works as a free backup and also updates the pom to the version the bootstrap_runelite.py created in a .txt file. 
 
 MY YOUTUBE CHANNEL:  
 https://www.youtube.com/@davidgatward4395
