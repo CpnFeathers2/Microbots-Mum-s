@@ -1,5 +1,5 @@
 TO USE THIS PROJECT CLONE IT LIKE YOU WOULD MICROBOT, JUST USING THE MICROBOT MUM'S FIRESTARTER-INSTIGATOR GITHUB (.GIT) LINK RATHER THAN CHASMI'S MICROBOT'S GITHUB (.GIT) LINK.
-ALTERNATIVELY, DOWNLOAD THE PROJECT AS A ZIP BY PRESSING THE GREEN <<<<CODE>>>></CODE> BUTTON 
+ALTERNATIVELY, DOWNLOAD THE PROJECT AS A ZIP BY PRESSING THE GREEN <<<<//CODE//>>>></CODE> BUTTON 
 OR:
 1. GO HERE: https://download-directory.github.io/
 2. Then paste in the official full directory URL (bottom of the README.md) and what this does is the same as doing git clone. So then you just click open project instead of clone repository in IntelliJ. 
