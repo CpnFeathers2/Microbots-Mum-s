@@ -32,4 +32,6 @@ jobs:
           java-version: 11
 
       - name: Build
-        run: ./ci/build.sh
+        run: |
+          chmod +x ./ci/build.sh
+          ./ci/build.sh
